@@ -1,16 +1,28 @@
 package com.training.ykb.rest;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.training.ykb.validation.StringStartValidation;
 
 
 @XmlRootElement
 public class Person {
 
-    @NotEmpty
+    @Size(min = 2, max = 15, message = "Person name 2 ile 15 arasında olmalı.")
+    @NotEmpty(message = "Person name boş olamaz.")
     private String  name;
+    @StringStartValidation(startMy = "yay")
     private String  surname;
+    @NotNull
+    @Max(120)
+    @Min(18)
     private Integer age;
+    @StringStartValidation(startMy = "tur")
     private String  nationality;
 
     public String getName() {
