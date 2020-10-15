@@ -1,7 +1,9 @@
 package com.training.ykb.order.rest;
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,18 +18,24 @@ import com.training.ykb.order.service.OrderService;
 
 @RestController
 @RequestMapping("/order")
+@RefreshScope
 public class OrderController {
 
 
     @Autowired
     @Qualifier("os")
-    private OrderService orSer;
+    private OrderService   orSer;
 
-    private int          count = 0;
+    @Autowired
+    private RabbitTemplate rTemplate;
+
+    private int            count = 0;
 
     @HystrixCommand(fallbackMethod = "fallbackCurBrerakerTest",
                     commandProperties = @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",
                                                          value = "500"))
+
+
     @GetMapping("/test")
     public String curBrerakerTest() {
         this.count++;
@@ -46,6 +54,14 @@ public class OrderController {
 
     public String fallbackCurBrerakerTest() {
         return "Hello world test";
+    }
+
+    @PostMapping("/testq")
+    public String testQ(@Validated @RequestBody final Order order) {
+        this.rTemplate.convertAndSend("notify_exc",
+                                      "notify_q_key",
+                                      order);
+        return "OK";
     }
 
     @PostMapping("/place")
