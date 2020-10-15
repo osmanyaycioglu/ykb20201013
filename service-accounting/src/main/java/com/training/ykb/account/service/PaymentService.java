@@ -13,6 +13,9 @@ public class PaymentService {
     private int port;
 
     public String pay(final PaymentRequest pr) {
+        if (pr.getOrderId() == 300) {
+            throw new IllegalArgumentException("Error 300");
+        }
         return "OK-" + this.port;
     }
 

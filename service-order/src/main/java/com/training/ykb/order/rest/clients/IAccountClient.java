@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.training.ykb.order.config.MyException;
 import com.training.ykb.order.model.PaymentRequest;
 
 @FeignClient("ACCOUNTING")
@@ -12,6 +13,6 @@ import com.training.ykb.order.model.PaymentRequest;
 public interface IAccountClient {
 
     @PostMapping("/pay")
-    public String pay(@RequestBody final PaymentRequest payment);
+    public String pay(@RequestBody final PaymentRequest payment) throws MyException;
 
 }

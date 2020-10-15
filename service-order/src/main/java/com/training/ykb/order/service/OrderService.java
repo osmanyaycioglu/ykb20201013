@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
+import com.training.ykb.order.config.MyException;
 import com.training.ykb.order.model.Order;
 import com.training.ykb.order.model.PaymentRequest;
 import com.training.ykb.order.rest.clients.IAccountClient;
@@ -32,7 +33,13 @@ public class OrderService {
         paymentRequestLoc.setCustomerId(orderParam.getCustomerId());
         paymentRequestLoc.setOrderId(orderParam.getOrderId());
         paymentRequestLoc.setAmount(100);
-        return this.accountClient.pay(paymentRequestLoc);
+        try {
+            String payLoc = this.accountClient.pay(paymentRequestLoc);
+            return payLoc;
+        } catch (MyException eLoc) {
+            return "Error oluştu : " + eLoc.getErrorObject();
+        }
+
     }
 
     public String placeOrder(final Order orderParam) {
