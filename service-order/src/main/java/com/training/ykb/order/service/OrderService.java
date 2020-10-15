@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +18,9 @@ import com.training.ykb.order.rest.clients.IAccountClient;
 @Service
 @Qualifier("os")
 public class OrderService {
+
+    @Value("${server.port}")
+    private int            port;
 
     @Autowired
     private RestTemplate   rt;
@@ -35,7 +39,8 @@ public class OrderService {
         paymentRequestLoc.setAmount(100);
         try {
             String payLoc = this.accountClient.pay(paymentRequestLoc);
-            return payLoc;
+
+            return "Order Port : " + this.port + "  " + payLoc;
         } catch (MyException eLoc) {
             return "Error oluştu : " + eLoc.getErrorObject();
         }
